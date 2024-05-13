@@ -1,0 +1,7 @@
+-- COS 221 PRAC 5 GROUP 14 --
+- This file is for all the database queries and every change is recorded.
+- Changes are denoted by "//", followed by the date and author.
+
+==========================================================================
+
+// Created 2024/05/13 7:50PM by @PawnParser
