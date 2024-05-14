@@ -38,3 +38,34 @@ INSERT INTO `cast` (`cast_id`, `lead_actor`, `secondary_actor`, `director`, `bac
 // Modfiied 2024/05/14 1:52PM by @MilanKru
 
 ==========================================================================
+
+//Creation of table Movies
+
+CREATE TABLE IF NOT EXISTS `Movies` (
+  `movie_id` INT NOT NULL AUTO_INCREMENT,
+  `Rating` INT GENERATED ALWAYS AS () VIRTUAL COMMENT 'Calculated using \"Reviews\" table',
+  `ReleaseDate` DATE NOT NULL,
+  `Summary` LONGTEXT NOT NULL,
+  `Length` INT NOT NULL COMMENT 'Gives length of the movie in minutes',
+  `AgeRating` VARCHAR(10) NULL COMMENT 'Age restriction rating of movie',
+  `Title` VARCHAR(85) NOT NULL,
+  `Genre` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`movie_id`))
+ENGINE = InnoDB;
+
+//Population of table movies
+
+INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summary`, `Length`, `AgeRating`, `Title`, `Genre`) VALUES (1, NULL, NULL, '29 April 2022', 'An assassin-for-hire finds that he\'s become a target after he refuses to complete a job for a dangerous criminal organization.', 114, '18', 'Memory', 'Action');
+INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summary`, `Length`, `AgeRating`, `Title`, `Genre`) VALUES (2, NULL, NULL, '14 April 2008', 'After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.', 126, '12', 'Iron Man', 'Action');
+INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summary`, `Length`, `AgeRating`, `Title`, `Genre`) VALUES (3, NULL, NULL, '22 April 2001', 'A mean lord exiles fairytale creatures to the swamp of a grumpy ogre, who must go on a quest and rescue a princess for the lord in order to get his land back.', 90, '8', 'Shrek', 'Comedy');
+INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summary`, `Length`, `AgeRating`, `Title`, `Genre`) VALUES (4, NULL, NULL, '15 December 1995', 'When two kids find and play a magical board game, they release a man trapped in it for decades - and a host of dangers that can only be stopped by finishing the game.', 104, '13', 'Jumanji', 'Comedy');
+INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summary`, `Length`, `AgeRating`, `Title`, `Genre`) VALUES (5, NULL, NULL, '19 February 2014', 'A slave-turned-gladiator finds himself in a race against time to save his true love, who has been betrothed to a corrupt Roman Senator. As Mount Vesuvius erupts, he must fight to save his beloved as Pompeii crumbles around him.', 105, '12', 'Pompeii', 'Romance');
+INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summary`, `Length`, `AgeRating`, `Title`, `Genre`) VALUES (6, NULL, NULL, '23 March 1990', 'A man in a legal but hurtful business needs an escort for some social events, and hires a beautiful prostitute he meets... only to fall in love.', 119, '15', 'Pretty Woman', 'Romance');
+INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summary`, `Length`, `AgeRating`, `Title`, `Genre`) VALUES (7, NULL, NULL, '17 November 2008', 'When Bella Swan moves to a small town in the Pacific Northwest, she falls in love with Edward Cullen, a mysterious classmate who reveals himself to be a 108-year-old vampire.', 122, '12', 'Twilight', 'Fantasy');
+INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summary`, `Length`, `AgeRating`, `Title`, `Genre`) VALUES (8, NULL, NULL, '25 May 2016', 'As an Orc horde invades the planet Azeroth using a magic portal, a few human heroes and dissenting Orcs must attempt to stop the true evil behind this war.', 123, '12', 'Warcraft', 'Fantasy');
+INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summary`, `Length`, `AgeRating`, `Title`, `Genre`) VALUES (9, NULL, NULL, '29 September 2014', 'With his wife\'s disappearance having become the focus of an intense media circus, a man sees the spotlight turned on him when it\'s suspected that he may not be innocent.', 149, '18', 'Gone Girl', 'Thriller');
+INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summary`, `Length`, `AgeRating`, `Title`, `Genre`) VALUES (10, NULL, NULL, '21 November 2016', 'In 1942, a Canadian intelligence officer in North Africa encounters a female French Resistance fighter on a deadly mission behind enemy lines. When they reunite in London, their relationship is tested by the pressures of war.', 124, '15', 'Allied', 'Thriller');
+
+// Modfiied 2024/05/14 17:56PM by @OPhelia2024
+
+==========================================================================
