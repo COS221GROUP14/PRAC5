@@ -69,3 +69,26 @@ INSERT INTO `mydb`.`Movies` (`movieID`, `Rating`, `Cast`, `ReleaseDate`, `Summar
 // Modfiied 2024/05/14 17:56PM by @OPhelia2024
 
 ==========================================================================
+CREATE TABLE watchlist (
+    watchlistID INT AUTO_INCREMENT PRIMARY KEY,
+    userID INT,
+    movie_id INT,
+    tvshow_ID INT,
+    FOREIGN KEY (userID) REFERENCES users(userID),
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
+    FOREIGN KEY (tvshow_id) REFERENCES tvshows(tvshow_id)
+);
+INSERT INTO watchlist (userID, movie_id, tvshow_ID) VALUES
+(1, 1, 1),
+(1, 2, 2),
+(2, 3, 3),
+(2, 4, 4),
+(3, 5, 5),
+(3, 1, 2),
+(4, 2, 3),
+(4, 3, 4),
+(5, 4, 5),
+(5, 5, 1);
+
+// Modified 2024/05/14 18:37 by @zaps123
+===========================================================================
