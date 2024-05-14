@@ -5,3 +5,34 @@
 ==========================================================================
 
 // Created 2024/05/13 7:50PM by @PawnParser
+
+==========================================================================
+
+//Creation of table cast
+CREATE TABLE `cast` (`cast_id` INT NOT NULL AUTO_INCREMENT , `lead_actor` TEXT NOT NULL , `secondary_actor` TEXT NOT NULL , `director` TEXT NOT NULL , `backstage` TEXT NOT NULL , `movie_id` INT NULL , `tv_id` INT NULL , PRIMARY KEY (`cast_id`));
+
+//Adding foreign keys for movie_id and tvshow_id
+ALTER TABLE cast
+ADD CONSTRAINT movies_FK
+FOREIGN KEY (movie_id)
+REFERENCES movies(movie_id)
+
+ALTER TABLE cast 
+ADD CONSTRAINT shows_FK 
+FOREIGN KEY (tv_id) 
+REFERENCES tvshows(tvshow_id);
+
+//Populating table cast
+INSERT INTO `cast` (`cast_id`, `lead_actor`, `secondary_actor`, `director`, `backstage`, `movie_id`, `tv_id`) VALUES 
+(NULL, 'Jack Nicholson', 'Marlon Brando', 'Steven Spielberg', 'Kerry Barden', 1, NULL), 
+(NULL, 'Robert De Niro', 'Al Pacino', 'Christopher Nolan', 'Victoria Burrows', NULL, 1),
+(NULL, 'Daniel Day-Lewis', 'Dustin Hoffman', 'James Cameron', 'Scot Boland', 2, NULL), 
+(NULL, 'Tom Hanks', 'Anthony Hopkins', 'Martin Scorsese', 'Ellen Chenoweth', NULL, 2), 
+(NULL, 'Paul Newman', 'Denzel Washington', 'Alfred Hitchcock', 'Sarah Finn', 3, NULL), 
+(NULL, 'Spencer Tracy', 'Laurence Olivier', 'Stanley Kubrick', 'Randi Hiller', NULL, 3), 
+(NULL, 'Jack Lemmon', '14. Michael Caine', 'Francis Ford Coppola', 'Kimberly Hope', 4, NULL),
+(NULL, 'James Stewart', 'Sean Penn', 'Woody Allen', 'Allison Jones', NULL, 4), 
+(NULL, 'Robin Williams', 'Robert Duvall', 'Billy Wilder', 'Ellen Lewis', 5, NULL), 
+(NULL, 'Morgan Freeman', 'Jeff Bridges', 'Zack Snyder', 'Junie Lowry-Johnson', NULL, 5)
+
+==========================================================================
