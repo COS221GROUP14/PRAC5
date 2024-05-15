@@ -91,4 +91,39 @@ INSERT INTO watchlist (userID, movie_id, tvshow_ID) VALUES
 (5, 5, 1);
 
 // Modified 2024/05/14 18:37 by @zaps123
+
+==========================================================================
+
+// Creation of TVShows table
+
+CREATE TABLE TVShows (
+    TVshowID INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255),
+    seasons INT,
+    releaseDate DATE,
+    ageRating VARCHAR(10),
+    summary TEXT,
+    genre VARCHAR(100),
+    castID INT,
+    reviewID INT,
+    FOREIGN KEY (castID) REFERENCES CastAndCrew(castAndCrewID),
+    FOREIGN KEY (reviewID) REFERENCES Reviews(reviewID)
+);
+
+// Insertion of data into TVShows table
+
+INSERT INTO TVShows (title, seasons, releaseDate, ageRating, summary, genre, castID, reviewID) VALUES
+('Breaking Bad', 5, '2008-01-20', '18+', 'A high school chemistry teacher turned methamphetamine manufacturer teams up with a former student to create and sell methamphetamine.', 'Drama', 1, 1),
+('Game of Thrones', 8, '2011-04-17', '18+', 'Seven noble families fight for control of the mythical land of Westeros.', 'Fantasy', 2, 2),
+('Stranger Things', 3, '2016-07-15', '13+', 'When a young boy disappears, his mother, a police chief, and his friends must confront terrifying supernatural forces to get him back.', 'Science Fiction', 3, 3),
+('The Office', 9, '2005-03-24', '16+', 'A mockumentary on a group of typical office workers, where the workday consists of ego clashes, inappropriate behavior, and tedium.', 'Comedy', 4, 4),
+('Friends', 10, '1994-09-22', '13+', 'Follows the personal and professional lives of six twenty to thirty-something-year-old friends living in Manhattan.', 'Comedy', 5, 5),
+('Breaking Bad', 5, '2008-01-20', '18+', 'A high school chemistry teacher turned methamphetamine manufacturer teams up with a former student to create and sell methamphetamine.', 'Drama', 6, 6),
+('The Crown', 4, '2016-11-04', '16+', 'Follows the political rivalries and romance of Queen Elizabeth II.', 'Drama', 7, 7),
+('Sherlock', 4, '2010-07-25', '16+', 'A modern update finds the famous sleuth and his doctor partner solving crime in 21st century London.', 'Mystery', 8, 8),
+('Stranger Things', 3, '2016-07-15', '13+', 'When a young boy disappears, his mother, a police chief, and his friends must confront terrifying supernatural forces to get him back.', 'Science Fiction', 9, 9),
+('Friends', 10, '1994-09-22', '13+', 'Follows the personal and professional lives of six twenty to thirty-something-year-old friends living in Manhattan.', 'Comedy', 10, 10);
+
+// Modified 2024/05/15 at 10:02 AM by @PawnParser
+
 ===========================================================================
