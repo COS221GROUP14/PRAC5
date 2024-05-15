@@ -127,3 +127,69 @@ INSERT INTO TVShows (title, seasons, releaseDate, ageRating, summary, genre, cas
 // Modified 2024/05/15 at 10:02 AM by @PawnParser
 
 ===========================================================================
+
+
+// Creation of Users table
+
+CREATE TABLE Users (
+    userID INT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(30),
+    password VARCHAR(30),
+    watchlistID INT,
+    premium BOOLEAN,
+    PRIMARY KEY (userID),
+    FOREIGN KEY (watchlistID) REFERENCES Watchlists(watchlistID)
+);
+
+
+// Population of Users table
+
+INSERT INTO Users (userID, username, password, watchlistID, premium)
+VALUES 
+    (1, 'user1', 'password1', 1, true),
+    (2, 'user2', 'password2', 2, false),
+    (3, 'user3', 'password3', 3, true),
+    (4, 'user4', 'password4', 4, false),
+    (5, 'user5', 'password5', 5, true),
+    (6, 'user6', 'password6', 6, false),
+    (7, 'user7', 'password7', 7, true),
+    (8, 'user8', 'password8', 8, false),
+    (9, 'user9', 'password9', 9, true),
+    (10, 'user10', 'password10', 10, false);
+
+
+----------------------------------------------------
+
+//creation of Reviews table
+
+CREATE TABLE Reviews (
+    reviewID INT NOT NULL AUTO_INCREMENT,
+    rating INT,
+    summary TEXT,
+    movieID INT,
+    TVshowID INT,
+    PRIMARY KEY (reviewID),
+    FOREIGN KEY (movieID) REFERENCES Movies(movieID),
+    FOREIGN KEY (TVshowID) REFERENCES TVshows(TVshowID)
+);
+
+
+
+// Population of Reviews table
+
+INSERT INTO Reviews (reviewID, rating, summary, movieID, TVshowID)
+VALUES 
+    (1, 5, 'Fantastic movie with great performances.', 1, NULL),
+    (2, 4, 'Enjoyed it, but felt it could be better.', 2, NULL),
+    (3, 5, 'A must-watch for all sci-fi fans!', 3, NULL),
+    (4, 3, 'Interesting storyline, but pacing was slow.', 4, NULL),
+    (5, 5, 'Absolutely loved it! Highly recommended.', NULL, 1),
+    (6, 4, 'Entertaining series, can''t wait for the next season.', NULL, 2),
+    (7, 2, 'Disappointing movie, not worth the hype.', 5, NULL),
+    (8, 5, 'Incredible performance by the lead actor.', 6, NULL),
+    (9, 4, 'A gripping thriller from start to finish.', NULL, 3),
+    (10, 3, 'Decent show, but lacked depth in characters.', NULL, 4);
+
+
+
+
