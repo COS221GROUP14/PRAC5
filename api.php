@@ -479,6 +479,48 @@ $api = new API();
 
             echo($response);
         }
+            else if (isset($postData["type"]) && $postData["type"] == "GetShow")
+        {
+            $title = isset($postData["title"]) ? $postData["title"] : null;
+            $season = isset($postData["season"]) ? $postData["season"] : null;
+            $release_date = isset($postData["release_date"]) ? $postData["release_date"] : null;
+            $length  = isset($postData["length"]) ? $postData["length"] : null;
+            $genre  = isset($postData["genre"]) ? $postData["genre"] : null;
+            $rating = isset($postData["rating"]) ? $postData["rating"] : null;
+            $age_rating = isset($postData["age_rating"]) ? $postData["age_rating"] : null;
+            $summary = isset($postData["summary"]) ? $postData["summary"] : null;
+
+            $response = $api->getShow($title, $season , $release_date, $length , $genre , $rating , $age_rating , $summary);
+
+            echo($response);
+        }
+        else if (isset($postData["type"]) && $postData["type"] == "AddShow" && isset($postData["title"]) && isset($postData["season"]) && isset($postData["release_date"]) && isset($postData["length"]) && isset($postData["genre"]) && isset($postData["summary"]))
+        {
+            $response = $api->addShow($postData["title"], $postData["season"] , $postData["release_date"] , $postData["length"] , $postData["genre"] , $postData["rating"] , $postData["age_rating"] , $postData["summary"]);
+
+            echo($response);
+        }
+        else if (isset($postData["type"]) && $postData["type"] == "UpdateShow" && isset($postData["show_id"]))
+        {
+            $title = isset($postData["title"]) ? $postData["title"] : null;
+            $season = isset($postData["season"]) ? $postData["season"] : null;
+            $release_date = isset($postData["release_date"]) ? $postData["release_date"] : null;
+            $length  = isset($postData["length"]) ? $postData["length"] : null;
+            $genre  = isset($postData["genre"]) ? $postData["genre"] : null;
+            $rating = isset($postData["rating"]) ? $postData["rating"] : null;
+            $age_rating = isset($postData["age_rating"]) ? $postData["age_rating"] : null;
+            $summary = isset($postData["summary"]) ? $postData["summary"] : null;
+            
+            $response = $api->updateShow($postData["movie_id"], $title, $season , $release_date, $length , $genre , $rating , $age_rating , $summary);
+
+            echo($response);
+        }
+        else if (isset($postData["type"]) && $postData["type"] == "DeleteShow" && isset($postData["show_id"]) )
+        {
+            $response = $api->deleteShow($postData["show_id"]);
+
+            echo($response);
+        }
         else 
         {
             echo $api->generateErrorResponse("Invalid request");
