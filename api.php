@@ -86,7 +86,77 @@ class API
         return $this->generateErrorResponse("Email not in database or password incorrect");
     }
 
+    public function getMovie($title , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
+    {
+        $sql = "SELECT * FROM movies";
+        $conditions = [];
+        $params = [];
 
+        if ($title !== null) 
+        {
+            $conditions[] = "Title LIKE ?";
+            $params[] = "%" . $title . "%";
+        }
+        if ($releaseDate !== null) 
+        {
+            $conditions[] = "ReleaseDate = ?";
+            $params[] = $releaseDate;
+        }
+        if ($length!== null) 
+        {
+            $conditions[] = "Length = ?";
+            $params[] = $length;
+        }
+        if ($genre !== null) 
+        {
+            $conditions[] = "Genre = ?";
+            $params[] = $genre;
+        }
+        if ($rating !== null) 
+        {
+            $conditions[] = "Rating = ?";
+            $params[] = $rating;
+        }
+        if ($ageRating !== null) 
+        {
+            $conditions[] = "AgeRating = ?";
+            $params[] = $ageRating;
+        }
+        if ($summary !== null) 
+        {
+            $conditions[] = "Summary = ?";
+            $params[] = $summary;
+        }
+
+        if (count($conditions) > 0) 
+        {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+        $stmt = $this->conn->prepare($sql);
+        if (!empty($params)) 
+        {
+            $types = str_repeat('s', count($params));
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+
+        $stmt->close();
+
+        return $this->generateSuccessArrayResponse($data);
+    }
+
+    public function addMovie($title , $release_date , $length , $genre , $rating , $age_rating , $summary)
+    {
+        $sql = "INSERT INTO `movies` (`Title`, `ReleaseDate` , `Length` , `Genre` , `Rating` , `AgeRating` , `Summary`) VALUES (?, ? , ? , ? , ? , ? , ?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("sssssss" , $title , $release_date , $length , $genre , $rating , $age_rating , $summary);
+        $stmt->execute();
+
+        return $this->generateSuccessResponse("Successfully added Movie");
+    }
 
     private function generateSuccessResponse($message) 
     {
@@ -138,7 +208,15 @@ $api = new API();
         }
         else if (isset($postData["type"]) && $postData["type"] == "GetMovie")
         {
-            $response = $api->getMovie($postData["title"], $postData["release_date"] , $postData["length"] , $postData["genre"] , $postData["rating"] , $postData["age_rating"] , $postData["summary"]);
+            $title = isset($postData["title"]) ? $postData["title"] : null;
+            $release_date = isset($postData["release_date"]) ? $postData["release_date"] : null;
+            $length  = isset($postData["lenght"]) ? $postData["length"] : null;
+            $genre  = isset($postData["genre"]) ? $postData["genre"] : null;
+            $rating = isset($postData["rating"]) ? $postData["rating"] : null;
+            $age_rating = isset($postData["age_rating"]) ? $postData["age_rating"] : null;
+            $summary = isset($postData["summary"]) ? $postData["summary"] : null;
+
+            $response = $api->getMovie($title, $release_date, $length , $genre , $rating , $age_rating , $summary);
 
             echo($response);
         }
@@ -148,7 +226,7 @@ $api = new API();
 
             echo($response);
         }
-        else if (isset($postData["type"]) && $postData["type"] == "AddMovie")
+        else if (isset($postData["type"]) && $postData["type"] == "UpdateMovie")
         {
             $response = $api->updateMovie($postData["movie_id"] , $postData["title"], $postData["release_date"] , $postData["length"] , $postData["genre"] , $postData["rating"] , $postData["age_rating"] , $postData["summary"]);
 
