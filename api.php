@@ -158,6 +158,247 @@ class API
         return $this->generateSuccessResponse("Successfully added Movie");
     }
 
+    public function updateMovie($movie_id , $title , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
+    {
+        $sql = "UPDATE movies";
+        $conditions = [];
+        $params = [];
+
+        if ($title !== null) 
+        {
+            $conditions[] = "Title = ?";
+            $params[] = $title;
+        }
+        if ($releaseDate !== null) 
+        {
+            $conditions[] = "ReleaseDate = ?";
+            $params[] = $releaseDate;
+        }
+        if ($length!== null) 
+        {
+            $conditions[] = "Length = ?";
+            $params[] = $length;
+        }
+        if ($genre !== null) 
+        {
+            $conditions[] = "Genre = ?";
+            $params[] = $genre;
+        }
+        if ($rating !== null) 
+        {
+            $conditions[] = "Rating = ?";
+            $params[] = $rating;
+        }
+        if ($ageRating !== null) 
+        {
+            $conditions[] = "AgeRating = ?";
+            $params[] = $ageRating;
+        }
+        if ($summary !== null) 
+        {
+            $conditions[] = "Summary = ?";
+            $params[] = $summary;
+        }
+
+        if (count($conditions) > 0) 
+        {
+            $sql .= " SET " . implode(" , ", $conditions);
+        }
+        else
+        {
+            return $this->generateErrorResponse("Must update atleast 1 column");
+        }
+        $sql .= " WHERE movie_id = ?";
+        $params[] = $movie_id;
+
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!empty($params)) 
+        {
+            $types = str_repeat('s', count($params));
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $stmt->close();
+
+        return $this->generateSuccessResponse("Succesfully update Movie");
+    }
+
+    public function deleteMovie($movie_id)
+    {
+        $sql = "DELETE FROM `movies` WHERE `movie_id` = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $movie_id);
+        $stmt->execute();
+        if ($stmt->error) {
+            return $this->generateErrorResponse("Failed to execute statement: " . $stmt->error);
+        }
+        return $this->generateSuccessResponse("Succesfully deleted Movie");
+    }
+
+    public function getShow($title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
+    {
+        $sql = "SELECT * FROM TVShows";
+        $conditions = [];
+        $params = [];
+
+        if ($title !== null) 
+        {
+            $conditions[] = "Title LIKE ?";
+            $params[] = "%" . $title . "%";
+        }
+        if ($season !== null) 
+        {
+            $conditions[] = "Season = ?";
+            $params[] = $title;
+        }
+        if ($releaseDate !== null) 
+        {
+            $conditions[] = "ReleaseDate = ?";
+            $params[] = $releaseDate;
+        }
+        if ($length!== null) 
+        {
+            $conditions[] = "Length = ?";
+            $params[] = $length;
+        }
+        if ($genre !== null) 
+        {
+            $conditions[] = "Genre = ?";
+            $params[] = $genre;
+        }
+        if ($rating !== null) 
+        {
+            $conditions[] = "Rating = ?";
+            $params[] = $rating;
+        }
+        if ($ageRating !== null) 
+        {
+            $conditions[] = "AgeRating = ?";
+            $params[] = $ageRating;
+        }
+        if ($summary !== null) 
+        {
+            $conditions[] = "Summary = ?";
+            $params[] = $summary;
+        }
+
+        if (count($conditions) > 0) 
+        {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+        $stmt = $this->conn->prepare($sql);
+        if (!empty($params)) 
+        {
+            $types = str_repeat('s', count($params));
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+
+        $stmt->close();
+
+        return $this->generateSuccessArrayResponse($data);
+    }
+
+    public function addShow($title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
+    {
+        $sql = "INSERT INTO `TVShows` (`Title`, `Season`, `ReleaseDate` , `Length` , `Genre` , `Rating` , `AgeRating` , `Summary`) VALUES (?, ? , ? , ? , ? , ? , ? , ?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("sssssss" , $title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary);
+        $stmt->execute();
+
+        return $this->generateSuccessResponse("Successfully added Show");
+    }
+
+    public function updateShow($show_id , $title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
+    {
+        $sql = "UPDATE movies";
+        $conditions = [];
+        $params = [];
+
+        if ($title !== null) 
+        {
+            $conditions[] = "Title = ?";
+            $params[] = $title;
+        }
+        if ($season !== null) 
+        {
+            $conditions[] = "Season = ?";
+            $params[] = $season;
+        }
+        if ($releaseDate !== null) 
+        {
+            $conditions[] = "ReleaseDate = ?";
+            $params[] = $releaseDate;
+        }
+        if ($length!== null) 
+        {
+            $conditions[] = "Length = ?";
+            $params[] = $length;
+        }
+        if ($genre !== null) 
+        {
+            $conditions[] = "Genre = ?";
+            $params[] = $genre;
+        }
+        if ($rating !== null) 
+        {
+            $conditions[] = "Rating = ?";
+            $params[] = $rating;
+        }
+        if ($ageRating !== null) 
+        {
+            $conditions[] = "AgeRating = ?";
+            $params[] = $ageRating;
+        }
+        if ($summary !== null) 
+        {
+            $conditions[] = "Summary = ?";
+            $params[] = $summary;
+        }
+
+        if (count($conditions) > 0) 
+        {
+            $sql .= " SET " . implode(" , ", $conditions);
+        }
+        else
+        {
+            return $this->generateErrorResponse("Must update atleast 1 column");
+        }
+        $sql .= " WHERE show_id = ?";
+        $params[] = $show_id;
+
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!empty($params)) 
+        {
+            $types = str_repeat('s', count($params));
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $stmt->close();
+
+        return $this->generateSuccessResponse("Succesfully update Movie");
+    }
+
+    public function deleteShow($show_id)
+    {
+        $sql = "DELETE FROM `TVShows` WHERE `show_id` = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $show_id);
+        $stmt->execute();
+        if ($stmt->error) {
+            return $this->generateErrorResponse("Failed to execute statement: " . $stmt->error);
+        }
+        return $this->generateSuccessResponse("Succesfully deleted Show");
+    }
+
+    
     private function generateSuccessResponse($message) 
     {
         $response = array(
