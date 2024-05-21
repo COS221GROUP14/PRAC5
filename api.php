@@ -86,7 +86,7 @@ class API
         return $this->generateErrorResponse("Email not in database or password incorrect");
     }
 
-    
+
 
     private function generateSuccessResponse($message) 
     {
@@ -106,7 +106,7 @@ class API
         return json_encode($response);
     }
 
-    private function generateSuccessListingsResponse($array)
+    private function generateSuccessArrayResponse($array)
     {
         $response = array(
             "status" => "success",
