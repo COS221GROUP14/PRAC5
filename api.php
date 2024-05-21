@@ -398,7 +398,23 @@ class API
         return $this->generateSuccessResponse("Succesfully deleted Show");
     }
 
-    
+    public function addReview($rating , $summary , $movie_id , $show_id)
+    {
+        if($movie_id == null && $show_id == null)
+        {
+            return $this->generateErrorResponse("movieID or showID must be specified");
+        }
+        if($movie_id != null && $show_id != null)
+        {
+            return $this->generateErrorResponse("You can only specify movieID or showID , one at a time");
+        }
+        $sql = "INSERT INTO `reviews` (`rating`, `summary`, `movieID` , `TVshowID`) VALUES (?, ? , ? , ?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ssss" , $rating , $summary , $movie_id , $show_id);
+        $stmt->execute();
+
+        return $this->generateSuccessResponse("Successfully added Review");
+    }
     private function generateSuccessResponse($message) 
     {
         $response = array(
@@ -518,6 +534,14 @@ $api = new API();
         else if (isset($postData["type"]) && $postData["type"] == "DeleteShow" && isset($postData["show_id"]) )
         {
             $response = $api->deleteShow($postData["show_id"]);
+
+            echo($response);
+        }
+        else if (isset($postData["type"]) && $postData["type"] == "AddReview" && isset($postData["rating"]) && isset($postData["summary"]))
+        {
+            $movie_id = isset($postData["movie_id"]) ? $postData["movie_id"] : null;
+            $show_id = isset($postData["show_id"]) ? $postData["show_id"] : null;
+            $response = $api->addReview($postData["rating"] , $postData["summary"], $movie_id , $show_id);
 
             echo($response);
         }
