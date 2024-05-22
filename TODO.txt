@@ -7,3 +7,9 @@ TODO LIST:
 - Do CSS for the site.
 - Add a type to the cast table.
 - Potentially add data to the tables within the API by referencing the stuff mentioned in the prac.
+
+- HTML Layout (For Avu) :
+
+- Login page.
+- Home page, after login page. Shows all of the movies and whatnot. Like Netflix. 
+- Separate page for favourites. 
