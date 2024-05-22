@@ -2,11 +2,13 @@ TODO LIST:
 
 - Add URL collumn for each movie/tvshow to represent the image assisiated with that title.
 - Change the ID of the tvshows and movies to be MediaID so that it correctly represents the fact that they are specializations of the Media type.
+- Modify reviews, add a type as to whether it's tvshow or movie, and have only one ID which is MediaID.
 - Do HTML frontend for the website, the layout of the page. (Avu)
 - Do powerpoint for presentation. Presentation will be 20 mins, 5 mins for questions at the end. Show screenshots of everything.
 - Do CSS for the site.
 - Add a type to the cast table.
 - Potentially add data to the tables within the API by referencing the stuff mentioned in the prac.
+- Fix the length for tvshows only for movies, (movie watch length). Remove length attribute from tvshow table.
 
 - HTML Layout (For Avu) :
 
