@@ -342,3 +342,41 @@ function DeleteShow() {
 function Addfave() {
     //needs to be coded according to method used to get favourites
 }
+
+function AddReview() {
+    //change ids to match html doc
+    var rating = document.getElementById("inRate").value;
+    var sum = document.getElementById("inSum").value;
+    var movie = document.getElementById("inMovie").value;
+    var show = document.getElementById("inShow").value;
+
+    jsonObj = {
+        type : "addReview",
+        rating : rating,
+        summary : sum,
+        movie_id : movie,
+        show_id : show,
+    }
+
+    //insert url for api below
+    request.open('POST', 'https://wheatley.cs.up.ac.za/u23586312/api.php')
+    request.setRequestHeader('Content-Type', 'application/json')
+    request.send(JSON.stringify(jsonObj))
+
+    request.onload = () => {
+        if (request.status >= 200 && request.status < 300) {
+            var response = JSON.parse(request.responseText);
+
+            //get name of header in div containing tv show from html doc
+            var head = document.getElementById("headerOfDivContainingMovie");
+
+            if (response.status == "success") {
+                //change to fit html element
+                head.innerHTML = "<h3 id='headerOfDivContainingMovie'>" + response.message + "</h3>";
+            } else {
+                //change to fit html element
+                head.innerHTML = "<h3 id='headerOfDivContainingMovie'>" + response.message + "</h3>";
+            } 
+        }
+    }
+}
