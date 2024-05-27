@@ -7,23 +7,17 @@ var request = new XMLHttpRequest();
 
 function GetMovie() {
     //change ids to match html doc
-    var title = document.getElementById("inTitle").value;
-    var release = document.getElementById("inRelease").value;
-    var length = document.getElementById("inLength").value;
-    var genre = document.getElementById("inGenre").value;
-    var rating = document.getElementById("inRating").value;
-    var age = document.getElementById("inAge").value;
-    var sum = document.getElementById("inSum").value;
+    var genre = document.getElementById("genreFilter").value;
 
     jsonObj = {
         type : "GetMovie",
-        title : title,
-        release_date : release,
-        length : length,
+        title : null,
+        release_date : null,
+        length : null,
         genre : genre,
-        rating : rating,
-        age_rating : age,
-        summary : sum
+        rating : null,
+        age_rating : null,
+        summary : null
     }
 
     //insert url for api below
@@ -35,17 +29,17 @@ function GetMovie() {
         if (request.status >= 200 && request.status < 300) {
             var response = JSON.parse(request.responseText);
 
-            //get name of header in div containing movie from html doc
-            var head = document.getElementById("headerOfDivContainingMovie");
+            var mediaDiv = document.getElementById("media");
 
             if (response.status == "success") {
-                //change this when have html formatting
-                head.hidden = response["movieID"];
-                head.innerHTML = "";
-                //items response["Rating"] / ["ReleaseDate"] / ["Summary"] / ["Length"] / ["AgeRating"] / ["Title"] / ["Genre"]
+                mediaDiv.hidden = response["movieID"];
+                mediaDiv.innerHTML = "<h2 class = 'title'>"+ response["Title"] +"</h2>" +
+                                    "<p class = 'description'>"+ response["Summary"] +"</p>" +
+                                    "<p class='genre'>"+ response["Genre"] +"</p>" +
+                                    "<p class ='ageRating'>"+ response["AgeRating"] +"</p>" +
+                                    "<button class='watchlist'>Add to watchlist</button>";
             } else {
-                //change to fit html element
-                head.innerHTML = "<h3 id='headerOfDivContainingMovie'>Something went wrong. Please reload the page</h3>";
+                window.alert("Something went wrong. Please reload the page");
             } 
         }
     }
