@@ -3,20 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="Login.js"></script>
+     <link rel="stylesheet" href="index-style.css">
     <title>Profile creation</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
+        
         .container {
             width: 50%;
             margin: 50px auto;
-            background-color: #fff;
+            
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -39,7 +33,7 @@
             border-radius: 5px;
         }
         .btn {
-            background-color: #007bff;
+            background-color: #4CAF50;
             color: #fff;
             padding: 10px 20px;
             border: none;
@@ -48,7 +42,7 @@
             font-size: 16px;
         }
         .btn:hover {
-            background-color: #0056b3;
+            background-color: #3e8e41;
         }
         #propertyImage {
             max-width: 100%;
@@ -60,7 +54,7 @@
 </head>
 <body >
     <nav class="navbar">
-        <img src ="img/logo.jpg" alt="TouchGrass logo" class="logo">  <!---- place the logo jpg here  -->
+        <img src ="logo.png" alt="TouchGrass logo" class="logo">  <!---- place the logo jpg here  -->
    </nav>
     <div class="container">
         <h2>Create new User</h2>
@@ -71,7 +65,7 @@
             </div>
             <div class="form-group">
                 <label for="name">Password</label>
-                <input type="text" id="pass" name="name" required>
+                <input type="text" id="name" name="name" required>
             </div>
             
             <div class="form-group">
@@ -79,7 +73,7 @@
                 <input type="url" id="url" name="url" required oninput="updateImage()">
             </div>
             <div class="form-group">
-                <img id="propertyImage" src="" alt="Property Image">
+                
             </div>
             <div class="form-group">
                 <button type="submit" class="btn">Register</button>
