@@ -570,6 +570,71 @@ class API
         return $this->generateSuccessResponse("Succesfully deleted Watchlist");
     }
 
+    public function getCast($cast_id , $lead_actor , $secondary_actor , $director , $backstage , $movie_id , $show_id)
+    {
+        $sql = "SELECT * FROM cast";
+        $conditions = [];
+        $params = [];
+
+        if($movie_id === null && $show_id === null)
+        {
+            return $this->generateErrorResponse("movieID or showID must be specified");
+        }
+        if($movie_id !== null && $show_id !== null)
+        {
+            return $this->generateErrorResponse("You can only specify movieID or showID , one at a time");
+        }
+        if($movie_id !== null)
+        {
+            $conditions[] = "movie_id = ?";
+            $params[] = "%" . $movie_id . "%";
+        }
+        else if($show_id !== null)
+        {
+            $conditions[] = "show_id = ?";
+            $params[] = "%" . $show_id . "%";
+        }
+        if ($cast_id !== null) 
+        {
+            $conditions[] = "cast_id = ?";
+            $params[] = "%" . $cast_id . "%";
+        }
+        if ($lead_actor !== null) 
+        {
+            $conditions[] = "lead_actor LIKE ?";
+            $params[] = "%" . $lead_actor . "%";
+        }
+        if ($secondary_actor !== null) 
+        {
+            $conditions[] = "secondary LIKE ?";
+            $params[] = "%" . $secondary_actor . "%";
+        }
+        if ($director !== null) 
+        {
+            $conditions[] = "director LIKE ?";
+            $params[] = "%" . $director . "%";
+        }
+
+        if (count($conditions) > 0) 
+        {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+        $stmt = $this->conn->prepare($sql);
+        if (!empty($params)) 
+        {
+            $types = str_repeat('s', count($params));
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+
+        $stmt->close();
+
+        return $this->generateSuccessArrayResponse($data);
+    }
+
     private function generateSuccessResponse($message) 
     {
         $response = array(
@@ -737,6 +802,19 @@ $api = new API();
             $movie_id = isset($postData["movie_id"]) ? $postData["movie_id"] : null;
             $show_id = isset($postData["show_id"]) ? $postData["show_id"] : null;
             $response = $api->deleteWatchlist($postData["user_id"] , $movie_id , $show_id);
+
+            echo($response);
+        }
+        else if(isset($postData["type"]) && $postData["type"] == "GetCast")
+        {
+            $cast_id = isset($postData["cast_id"]) ? $postData["cast_id"] : null;
+            $lead_actor = isset($postData["lead_actor"]) ? $postData["lead_actor"] : null;
+            $secondary_actor = isset($postData["secondary_actor"]) ? $postData["secondary_actor"] : null;
+            $director = isset($postData["director"]) ? $postData["director"] : null;
+            $backstage = isset($postData["backstage"]) ? $postData["backstage"] : null;
+            $movie_id = isset($postData["movie_id"]) ? $postData["movie_id"] : null;
+            $show_id = isset($postData["show_id"]) ? $postData["show_id"] : null;
+            $response = $api->getCast($cast_id , $lead_actor , $secondary_actor , $director , $backstage , $movie_id , $show_id);
 
             echo($response);
         }
