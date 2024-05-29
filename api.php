@@ -460,6 +460,66 @@ class API
 
         return $this->generateSuccessArrayResponse($data);
     }
+
+    public function addWatchlist($user_id , $movie_id , $show_id)
+    {
+        if($movie_id === null && $show_id === null)
+        {
+            return $this->generateErrorResponse("movieID or showID must be specified");
+        }
+        if($movie_id !== null && $show_id !== null)
+        {
+            return $this->generateErrorResponse("You can only specify movieID or showID , one at a time");
+        }
+        $sql = "INSERT INTO `Watchlist` (`user_id`, `movie_id`, `show_id`) VALUES (?, ?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("sssssss" , $user_id , $movie_id, $show_id);
+        $stmt->execute();
+
+        return $this->generateSuccessResponse("Added to watchlist");
+    }
+
+    public function getWatchList($user_id)
+    {
+        $sql = "SELECT * FROM Watchlist WHERE user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s" , $user_id);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        return $this->generateSuccessArrayResponse($data);
+    }
+
+    public function deleteWatchlist($user_id , $movie_id , $show_id)
+    {
+        if($movie_id === null && $show_id === null)
+        {
+            return $this->generateErrorResponse("movieID or showID must be specified");
+        }
+        if($movie_id !== null && $show_id !== null)
+        {
+            return $this->generateErrorResponse("You can only specify movieID or showID , one at a time");
+        }
+        if($movie_id !== null)
+        {
+            $sql = "DELETE FROM `TVShows` WHERE `user_id` = ? AND `movie_id` = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("ss", $user_id , $movie_id);
+        }
+        else if($show_id !== null)
+        {
+            $sql = "DELETE FROM `TVShows` WHERE `user_id` = ? AND `show_id` = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("ss", $user_id , $show_id);
+        }
+        $stmt->execute();
+        if ($stmt->error) {
+            return $this->generateErrorResponse("Failed to execute statement: " . $stmt->error);
+        }
+        return $this->generateSuccessResponse("Succesfully deleted Watchlist");
+    }
     
     private function generateSuccessResponse($message) 
     {
@@ -596,6 +656,28 @@ $api = new API();
             $movie_id = isset($postData["movie_id"]) ? $postData["movie_id"] : null;
             $show_id = isset($postData["show_id"]) ? $postData["show_id"] : null;
             $response = $api->getReview($movie_id , $show_id);
+
+            echo($response);
+        }
+        else if(isset($postData["type"]) && $postData["type"] == "GetWatchlist" && isset($postData["user_id"]))
+        {
+            $response = $api->getWatchList($postData["user_id"]);
+
+            echo($response);
+        }
+        else if(isset($postData["type"]) && $postData["type"] == "AddWatchlist" && isset($postData["user_id"]))
+        {
+            $movie_id = isset($postData["movie_id"]) ? $postData["movie_id"] : null;
+            $show_id = isset($postData["show_id"]) ? $postData["show_id"] : null;
+            $response = $api->addWatchList($postData["user_id"] , $movie_id , $show_id);
+
+            echo($response);
+        }
+        else if(isset($postData["type"]) && $postData["type"] == "RemoveWatchlist" && isset($postData["user_id"]))
+        {
+            $movie_id = isset($postData["movie_id"]) ? $postData["movie_id"] : null;
+            $show_id = isset($postData["show_id"]) ? $postData["show_id"] : null;
+            $response = $api->deleteWatchlist($postData["user_id"] , $movie_id , $show_id);
 
             echo($response);
         }
