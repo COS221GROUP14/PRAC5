@@ -108,4 +108,43 @@ DeleteShow:
     "movie_id" : "MediaID"
 }
 
+AddReview:
+{
+    "type" : "AddReview",
+    "movie_id" : "MediaID",
+    "show_id" : "MediaID
+}
+
+GetReview:
+{
+    "type" : "GetReview",
+    "movie_id" : "MediaID",
+    "show_id" : "MediaID"
+}
+
+GetWatchlist:
+{
+    "type" : "GetWatchlist",
+    "user_id" : "UserID"
+}
+
+RemoveWatchlist:
+{
+    "type" : "RemoveWatchlist",
+    "user_id" : "UserID",
+    "movie_id" : "MediaID",
+    "show_id" : "MediaID"
+}
+
+GetCast:
+{
+    "type" : "GetCast",
+    "cast_id" : "CastID",
+    "lead_actor" : "LeadActor",
+    "secondary_actor" : "SecondaryActor",
+    "director" : "Director",
+    "backstage" : "BackstageCrew",
+    "movie_id" : "MovieID",
+    "show_id" : "ShowID"
+}
 
