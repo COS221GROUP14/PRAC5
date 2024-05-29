@@ -3,8 +3,8 @@ Register:
     "type": "Register",
     "username": "exampleUser",
     "password": "examplePassword",
-    "watchlist": 1, required
-    "premium": true required
+    "email": "userEmail",
+    "premium": true
 }
 
 Login: 
