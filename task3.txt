@@ -1,0 +1,58 @@
+ER-to-Relational Mapping Algorithm 
+• Step 1: Mapping of regular (strong) entity types
+For each regular entity type, E, in the ER schema Step 1: 
+- Create a relation R (User, Watchlist, Movies, TVshows, Reviews, Cast)
+- Add simple attributes of E to R (for User: userID, username, email, password, premium, watchlistID; for Watchlist: watchlistID, userID, mediaID; for Movies: mediaID, length, title, ageRating, releaseDate, genre, summary; for TVshows: mediaID, seasons, title, ageRating, releaseDate, genre, summary; for Reviews: reviewID, mediaID, userID, rating, summary; for Cast: castID, mediaID, leadActor, secondaryActor, director, backstage)
+- Include only the simple component attributes of composite attributes (no composite attributes)
+- Choose one of the key attributes of E as the primary key for R. If the attribute is a composite, then use all the simple attributes of the composite for the primary key of R (For User: userID; for Watchlist: watchlistID, for Movies: mediaID; for TVshows: mediaID; for Reviews: reviewID; for Cast: castID)
+
+ • Step 2: Mapping of weak entity types 
+For each weak entity type, W, in the ER schema with owner entity E 
+- Create a relation R 
+- Add the simple attributes of W to R 
+- Include as FK attributes of R, the primary key of the relations that correspond to the owner entity type 
+- The PK of R is a combination of the PK(s) of the owner(s) and the partial key of W, if any 
+- If there is a weak entity type 𝑬𝟏 , whose owner is also a weak entity type, 𝑬𝟐 then 𝑬1 should be mapped before E2 to determine the PK’s first.
+(NO WEAK ENTITY TYPES)
+
+• Step 3: Mapping of binary 1:1 relationships 
+- For each binary 1:1 relationship type R, identify the relations S and T (Approach 1) that correspond to the entity types participating in R. Choose one of the relations, say S - preferably the one with the total participation in R.  S = User, T = Watchlist & R = HAS_A
+- include as FK in S, the PK of T 
+- include all the simple attributes (or simple components of the composite attributes) of the 1:1 relationship type R in S
+In the binary 1:1 relationship, HAS_A (where a user [S] has a watchlist [T]), we include the primary key of S User (userID) as a foreign key in T Watchlist. We also include the primary key of Watchlist (watchlistID) as a foreign key in User because both have total participation in R. There were no attributes of the relationship HAS_A.
+
+
+
+• Step 4: Mapping of binary 1:N relationships 
+- For each binary 1:N relationship type R, identify the Step 4: Mapping of binary 1:N relationships relation S on the N side 
+- include in S the primary key of relation T (the other entity on the relationship). 
+- include any simple attributes (or simple components of composite attributes) of the 1:N relationship type as attributes of S.
+(NO BINARY 1:N RELATIONSHIPS)
+
+• Step 5: Mapping of binary M:N relationships 
+- For each binary M:N relationship type $R$, 
+- create a new relation S to represent R
+- include as foreign key attributes in S, the primary keys of the relations that represent the participating entity types 
+- make the combination of these primary keys the primary key 
+- include the simple attributes (or the composite as simple components of the relationship)
+In the binary M:N relationship, CONTAINS (where N watchlist(s) contain M media content(s)), we created a relation “Contains’’. In this new relation, we included the primary keys of Watchlists (watchlistID) & MediaContent (mediaID) as foreign keys. Then we made the combination of these keys the primary key of the new relation. The contains relationship did not have any attributes.
+
+• Step 6: Mapping of multivalued attributes 
+- For each multivalued attribute A, create a new relation R 
+- R will include an attribute corresponding to A and a Step 6: Mapping of multivalued attributes primary key K as foreign key in R of the relation that represents the entity type that has A as a multivalued attribute 
+- the primary key R is a combination of A and K (if the multivalued attribute is composite, include its simple components).
+(NO MULTIVALUED ATTRIBUTES IN OUR (E)ER-DIAGRAM)
+
+• Step 7:Mapping of N-ary relationships 
+- For each N-ary relationship type R, where n > 2, create a new relation S to represent R 
+- include as FK attributes in S, PK attributes of the relations that participate in the relationship 
+- include any simple attributes (or simple components of composites) of the N-ary relationship type as attributes of S 
+- the PK of S is a combination of all foreign keys that reference the relations participating in the relationship 
+- if the cardinality constraints on any of the entity types E participating in relation R is 1, then the PK of S should not include the FK attribute that reference E' corresponding to E.
+In the N-ary relationship, HAVE_A, consisting of Movies, TVshows and Cast (where 1 movie has 1 cast OR 1 TV-show has 1 cast), we created a new relation “Have_a”. 
+1.)	We included the primary keys of Movies (mediaID), TVshows (mediaID), and Cast (castID) as foreign keys in Have_a. There were no attributes of HAVE_A. The combination of the foreign keys mediaID & castID became the primary key.
+But, since the cardinality constraints of all 3 entities related to the relation are 1, none are considered part of the primary key. 
+
+2.)	In the N-ary relationship, HAS (where 1 Movie HAS N reviews OR 1 TV-show HAS N reviews), we created a relation “Has”.
+We included the primary keys of Movies (mediaID), TVshows (mediaID) and Reviews (reviewID) as foreign keys in Has. There were no attributes of HAS. The combination of the foreign keys mediaID & reviewID became the primary key.
+But since the cardinality ratios of both Movies & TVshows were 1, there primary keys (mediaID) is no longer considered part of the primary key. Therefore, only reviewID makes up the primary key for this new relation Has.
