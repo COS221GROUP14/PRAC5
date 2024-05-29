@@ -415,6 +415,52 @@ class API
 
         return $this->generateSuccessResponse("Successfully added Review");
     }
+
+    public function getReview($movie_id , $show_id)
+    {
+        if($movie_id === null && $show_id === null)
+        {
+            return $this->generateErrorResponse("movieID or showID must be specified");
+        }
+        if($movie_id !== null && $show_id !== null)
+        {
+            return $this->generateErrorResponse("You can only specify movieID or showID , one at a time");
+        }
+        $sql = "SELECT * FROM Reviews";
+        $conditions = [];
+        $params = [];
+
+        if ($movie_id !== null) 
+        {
+            $conditions[] = "movie_id = ?";
+            $params[] = "%" . $movie_id . "%";
+        }
+        if ($show_id !== null) 
+        {
+            $conditions[] = "show_id = ?";
+            $params[] = "%" . $show_id . "%";
+        }
+
+        if (count($conditions) > 0) 
+        {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+        $stmt = $this->conn->prepare($sql);
+        if (!empty($params)) 
+        {
+            $types = str_repeat('s', count($params));
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+
+        $stmt->close();
+
+        return $this->generateSuccessArrayResponse($data);
+    }
+    
     private function generateSuccessResponse($message) 
     {
         $response = array(
@@ -542,6 +588,14 @@ $api = new API();
             $movie_id = isset($postData["movie_id"]) ? $postData["movie_id"] : null;
             $show_id = isset($postData["show_id"]) ? $postData["show_id"] : null;
             $response = $api->addReview($postData["rating"] , $postData["summary"], $movie_id , $show_id);
+
+            echo($response);
+        }
+        else if(isset($postData["type"]) && $postData["type"] == "GetReview")
+        {
+            $movie_id = isset($postData["movie_id"]) ? $postData["movie_id"] : null;
+            $show_id = isset($postData["show_id"]) ? $postData["show_id"] : null;
+            $response = $api->getReview($movie_id , $show_id);
 
             echo($response);
         }
