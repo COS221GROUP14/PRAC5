@@ -1,0 +1,54 @@
+Register:
+{
+    "type": "Register",
+    "username": "exampleUser",
+    "password": "examplePassword",
+    "watchlist": 1, required
+    "premium": true required
+}
+
+Login: 
+{
+    "type": "Login",
+    "username": "exampleUser",
+    "password": "examplePassword"
+}
+
+GetMovie:
+{
+    "type": "GetMovie",
+    "movie_id": 1,
+    "title": "MovieTitle",
+    "release_date": "MovieReleaseDate",
+    "length": "MovieLength",
+    "genre": "MovieGenre",
+    "rating": "MovieRating",
+    "age_rating": "MovieAgeRating",
+    "summary": "MovieSummary"
+}
+
+AddMovie:
+{
+    "title": "MovieTitle",
+    "release_date": "MovieReleaseDate",
+    "length": "MovieLength",
+    "genre": "MovieGenre",
+    "rating": "MovieRating",
+    "age_rating": "MovieAgeRating",
+    "summary": "MovieSummary"
+    "url": "MovieImageUrl"
+}
+
+UpdateMovie
+AddMovie:
+{
+    "movie_id" : "MovieID",
+    "title": "MovieTitle",
+    "release_date": "MovieReleaseDate",
+    "length": "MovieLength",
+    "genre": "MovieGenre",
+    "rating": "MovieRating",
+    "age_rating": "MovieAgeRating",
+    "summary": "MovieSummary"
+    "url": "MovieImageUrl"
+}
