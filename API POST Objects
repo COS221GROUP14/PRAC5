@@ -29,6 +29,7 @@ GetMovie:
 
 AddMovie:
 {
+    "type" : "AddMovie"
     "title": "MovieTitle",
     "release_date": "MovieReleaseDate",
     "length": "MovieLength",
@@ -39,10 +40,10 @@ AddMovie:
     "url": "MovieImageUrl"
 }
 
-UpdateMovie
-AddMovie:
+UpdateMovie:
 {
-    "movie_id" : "MovieID",
+    "type" : "UpdateMovie",
+    "movie_id" : "MediaID",
     "title": "MovieTitle",
     "release_date": "MovieReleaseDate",
     "length": "MovieLength",
@@ -52,3 +53,59 @@ AddMovie:
     "summary": "MovieSummary"
     "url": "MovieImageUrl"
 }
+
+DeleteMovie:
+{
+    "type" : "DeleteMovie",
+    "movie_id" : "MovieID"
+}
+
+GetShow:
+{
+    "type": "GetShow",
+    "show_id": 1,
+    "title": "MovieTitle",
+    "season" : "MovieSeason",
+    "release_date": "MovieReleaseDate",
+    "length": "MovieLength",
+    "genre": "MovieGenre",
+    "rating": "MovieRating",
+    "age_rating": "MovieAgeRating",
+    "summary": "MovieSummary"
+}
+
+AddShow:
+{
+    "type" : "AddShow"
+    "title": "MovieTitle",
+    "season" : "MovieSeason",
+    "release_date": "MovieReleaseDate",
+    "length": "MovieLength",
+    "genre": "MovieGenre",
+    "rating": "MovieRating",
+    "age_rating": "MovieAgeRating",
+    "summary": "MovieSummary"
+    "url": "MovieImageUrl"
+}
+
+UpdateShow:
+{
+    "type" : "UpdateShow",
+    "shgow_id" : "MediaID",
+    "title": "MovieTitle",
+    "release_date": "MovieReleaseDate",
+    "length": "MovieLength",
+    "genre": "MovieGenre",
+    "rating": "MovieRating",
+    "age_rating": "MovieAgeRating",
+    "summary": "MovieSummary"
+    "url": "MovieImageUrl"
+}
+
+DeleteShow:
+{
+    "type" : "DeleteShow",
+    "movie_id" : "MediaID"
+}
+
+
