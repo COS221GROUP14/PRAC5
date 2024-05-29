@@ -86,12 +86,17 @@ class API
         return $this->generateErrorResponse("Email not in database or password incorrect");
     }
 
-    public function getMovie($title , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
+    public function getMovie($movie_id , $title , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
     {
         $sql = "SELECT * FROM movies";
         $conditions = [];
         $params = [];
 
+        if ($movie_id !== null) 
+        {
+            $conditions[] = "MediaID = ?";
+            $params[] = "%" . $movie_id . "%";
+        }
         if ($title !== null) 
         {
             $conditions[] = "Title LIKE ?";
@@ -148,17 +153,17 @@ class API
         return $this->generateSuccessArrayResponse($data);
     }
 
-    public function addMovie($title , $release_date , $length , $genre , $rating , $age_rating , $summary)
+    public function addMovie($title , $release_date , $length , $genre , $rating , $age_rating , $summary, $url)
     {
-        $sql = "INSERT INTO `movies` (`Title`, `ReleaseDate` , `Length` , `Genre` , `Rating` , `AgeRating` , `Summary`) VALUES (?, ? , ? , ? , ? , ? , ?)";
+        $sql = "INSERT INTO `movies` (`Title`, `ReleaseDate` , `Length` , `Genre` , `Rating` , `AgeRating` , `Summary` , `URL`) VALUES (?, ? , ? , ? , ? , ? , ? , ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sssssss" , $title , $release_date , $length , $genre , $rating , $age_rating , $summary);
+        $stmt->bind_param("ssssssss" , $title , $release_date , $length , $genre , $rating , $age_rating , $summary, $url);
         $stmt->execute();
 
         return $this->generateSuccessResponse("Successfully added Movie");
     }
 
-    public function updateMovie($movie_id , $title , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
+    public function updateMovie($movie_id , $title , $releaseDate , $length , $genre , $rating , $ageRating , $summary , $url)
     {
         $sql = "UPDATE movies";
         $conditions = [];
@@ -199,6 +204,11 @@ class API
             $conditions[] = "Summary = ?";
             $params[] = $summary;
         }
+        if($url !== null)
+        {
+            $conditions[] = "URL = ?";
+            $params[] = $url;
+        }
 
         if (count($conditions) > 0) 
         {
@@ -208,7 +218,7 @@ class API
         {
             return $this->generateErrorResponse("Must update atleast 1 column");
         }
-        $sql .= " WHERE movie_id = ?";
+        $sql .= " WHERE MediaID = ?";
         $params[] = $movie_id;
 
         $stmt = $this->conn->prepare($sql);
@@ -227,7 +237,7 @@ class API
 
     public function deleteMovie($movie_id)
     {
-        $sql = "DELETE FROM `movies` WHERE `movie_id` = ?";
+        $sql = "DELETE FROM `movies` WHERE `MediaID` = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $movie_id);
         $stmt->execute();
@@ -237,12 +247,17 @@ class API
         return $this->generateSuccessResponse("Succesfully deleted Movie");
     }
 
-    public function getShow($title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
+    public function getShow($show_id , $title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
     {
-        $sql = "SELECT * FROM TVShows";
+        $sql = "SELECT * FROM tvshows";
         $conditions = [];
         $params = [];
 
+        if ($show_id !== null) 
+        {
+            $conditions[] = "show_id = ?";
+            $params[] = "%" . $show_id . "%";
+        }
         if ($title !== null) 
         {
             $conditions[] = "Title LIKE ?";
@@ -314,7 +329,7 @@ class API
         return $this->generateSuccessResponse("Successfully added Show");
     }
 
-    public function updateShow($show_id , $title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
+    public function updateShow($show_id , $title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary, $url)
     {
         $sql = "UPDATE movies";
         $conditions = [];
@@ -369,7 +384,7 @@ class API
         {
             return $this->generateErrorResponse("Must update atleast 1 column");
         }
-        $sql .= " WHERE show_id = ?";
+        $sql .= " WHERE MediaID = ?";
         $params[] = $show_id;
 
         $stmt = $this->conn->prepare($sql);
@@ -388,7 +403,7 @@ class API
 
     public function deleteShow($show_id)
     {
-        $sql = "DELETE FROM `TVShows` WHERE `show_id` = ?";
+        $sql = "DELETE FROM `TVShows` WHERE `MediaID` = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $show_id);
         $stmt->execute();
@@ -400,17 +415,28 @@ class API
 
     public function addReview($rating , $summary , $movie_id , $show_id)
     {
-        if($movie_id == null && $show_id == null)
+        if($movie_id === null && $show_id === null)
         {
             return $this->generateErrorResponse("movieID or showID must be specified");
         }
-        if($movie_id != null && $show_id != null)
+        if($movie_id !== null && $show_id !== null)
         {
             return $this->generateErrorResponse("You can only specify movieID or showID , one at a time");
         }
-        $sql = "INSERT INTO `reviews` (`rating`, `summary`, `movieID` , `TVshowID`) VALUES (?, ? , ? , ?)";
+        $type = "";
+        if($movie_id !== null)
+        {
+            $sql = "INSERT INTO `reviews` (`rating`, `summary`, `MediaID` , `type`) VALUES (?, ? , ? , ?)";
+            $type = "Movie";
+        }
+        else if($show_id !== null)
+        {
+            $sql = "INSERT INTO `reviews` (`rating`, `summary`, `MediaID` , `type`) VALUES (?, ? , ? , ?)";
+            $type = "Show";
+        }
+
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ssss" , $rating , $summary , $movie_id , $show_id);
+        $stmt->bind_param("ssss" , $rating , $summary , $mediaID, $type);
         $stmt->execute();
 
         return $this->generateSuccessResponse("Successfully added Review");
@@ -426,21 +452,28 @@ class API
         {
             return $this->generateErrorResponse("You can only specify movieID or showID , one at a time");
         }
-        $sql = "SELECT * FROM Reviews";
+        $sql = "SELECT * FROM reviews";
         $conditions = [];
         $params = [];
-
+        $type = null;
         if ($movie_id !== null) 
         {
-            $conditions[] = "movie_id = ?";
+            $conditions[] = "MediaID = ?";
             $params[] = "%" . $movie_id . "%";
+            $type = "Movie";
         }
         if ($show_id !== null) 
         {
-            $conditions[] = "show_id = ?";
+            $conditions[] = "MediaID = ?";
             $params[] = "%" . $show_id . "%";
+            $type = "Show";
         }
 
+        if($type !== null)
+        {
+            $conditions[] = "type = ?";
+            $params[] = "%" . $type . "%";
+        } 
         if (count($conditions) > 0) 
         {
             $sql .= " WHERE " . implode(" AND ", $conditions);
@@ -471,7 +504,7 @@ class API
         {
             return $this->generateErrorResponse("You can only specify movieID or showID , one at a time");
         }
-        $sql = "INSERT INTO `Watchlist` (`user_id`, `movie_id`, `show_id`) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO `Watchlist` (`user_id`, `MediaID`, `show_id`) VALUES (?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("sssssss" , $user_id , $movie_id, $show_id);
         $stmt->execute();
@@ -520,7 +553,7 @@ class API
         }
         return $this->generateSuccessResponse("Succesfully deleted Watchlist");
     }
-    
+
     private function generateSuccessResponse($message) 
     {
         $response = array(
@@ -571,15 +604,16 @@ $api = new API();
         }
         else if (isset($postData["type"]) && $postData["type"] == "GetMovie")
         {
+            $movie_id = isset($postData["movie_id"]) ? $postData["movie_id"] : null;
             $title = isset($postData["title"]) ? $postData["title"] : null;
             $release_date = isset($postData["release_date"]) ? $postData["release_date"] : null;
-            $length  = isset($postData["lenght"]) ? $postData["length"] : null;
+            $length  = isset($postData["length"]) ? $postData["length"] : null;
             $genre  = isset($postData["genre"]) ? $postData["genre"] : null;
             $rating = isset($postData["rating"]) ? $postData["rating"] : null;
             $age_rating = isset($postData["age_rating"]) ? $postData["age_rating"] : null;
             $summary = isset($postData["summary"]) ? $postData["summary"] : null;
 
-            $response = $api->getMovie($title, $release_date, $length , $genre , $rating , $age_rating , $summary);
+            $response = $api->getMovie($movie_id , $title, $release_date, $length , $genre , $rating , $age_rating , $summary);
 
             echo($response);
         }
@@ -589,20 +623,29 @@ $api = new API();
 
             echo($response);
         }
-        else if (isset($postData["type"]) && $postData["type"] == "UpdateMovie")
+        else if (isset($postData["type"]) && $postData["type"] == "UpdateMovie" && isset($postData["movie_id"]))
         {
-            $response = $api->updateMovie($postData["movie_id"] , $postData["title"], $postData["release_date"] , $postData["length"] , $postData["genre"] , $postData["rating"] , $postData["age_rating"] , $postData["summary"]);
+            $title = isset($postData["title"]) ? $postData["title"] : null;
+            $release_date = isset($postData["release_date"]) ? $postData["release_date"] : null;
+            $length  = isset($postData["length"]) ? $postData["length"] : null;
+            $genre  = isset($postData["genre"]) ? $postData["genre"] : null;
+            $rating = isset($postData["rating"]) ? $postData["rating"] : null;
+            $age_rating = isset($postData["age_rating"]) ? $postData["age_rating"] : null;
+            $summary = isset($postData["summary"]) ? $postData["summary"] : null;
+            
+            $response = $api->updateMovie($postData["movie_id"], $title, $release_date, $length , $genre , $rating , $age_rating , $summary);
 
             echo($response);
         }
-        else if (isset($postData["type"]) && $postData["type"] == "DeleteMovie")
+        else if (isset($postData["type"]) && $postData["type"] == "DeleteMovie" && isset($postData["movie_id"]) )
         {
             $response = $api->deleteMovie($postData["movie_id"]);
 
             echo($response);
         }
-            else if (isset($postData["type"]) && $postData["type"] == "GetShow")
+        else if (isset($postData["type"]) && $postData["type"] == "GetShow")
         {
+            $show_id = isset($postData["show_id"]) ? $postData["show_id"] : null;
             $title = isset($postData["title"]) ? $postData["title"] : null;
             $season = isset($postData["season"]) ? $postData["season"] : null;
             $release_date = isset($postData["release_date"]) ? $postData["release_date"] : null;
@@ -612,7 +655,7 @@ $api = new API();
             $age_rating = isset($postData["age_rating"]) ? $postData["age_rating"] : null;
             $summary = isset($postData["summary"]) ? $postData["summary"] : null;
 
-            $response = $api->getShow($title, $season , $release_date, $length , $genre , $rating , $age_rating , $summary);
+            $response = $api->getShow($show_id ,$title, $season , $release_date, $length , $genre , $rating , $age_rating , $summary);
 
             echo($response);
         }
