@@ -3,18 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css">
-        <script src="Home.js"></script>
+        <link rel="stylesheet" href="home-style.css">
     </head>
     <body>
         <nav class="navbar">
-            <img src ="logo.jpg" alt="TouchGrass logo" class="logo">  <!---- place the logo jpg here  -->
-       </nav>
-       <div class="search-container">
-        <form action="#" method="get">
-            <input type="text" placeholder="Search..." name="q" />
-            <button type="submit">Search</button>
-        </form>
+            <img src="logo.jpg" alt="TouchGrass logo" class="logo">  <!-- Place the logo jpg here -->
+        </nav>
+        <div class="search-container">
+            <form action="#" method="get">
+                <input type="text" placeholder="Search..." name="q" />
+                <button type="submit">Search</button>
+            </form>
         </div>
         <div class="filter-container">
             <select id="genreFilter" onchange="GetMovie()">
@@ -30,10 +29,10 @@
         </div>
         <div class="media-container">
             <div class="media" id="media">
-                <h2 class = "title"></h2>
-                <p class = "description"></p>
+                <h2 class="title"></h2>
+                <p class="description"></p>
                 <p class="genre"></p>
-                <p class ="ageRating"></p>
+                <p class="ageRating"></p>
                 <button class="watchlist">Add to watchlist</button>
             </div>
         </div>
