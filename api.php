@@ -114,8 +114,8 @@ class API
         }
         if ($genre !== null) 
         {
-            $conditions[] = "Genre = ?";
-            $params[] = $genre;
+            $conditions[] = "Genre LIKE ?";
+            $params[] = "%" . $genre . "%";
         }
         if ($rating !== null) 
         {
@@ -319,11 +319,11 @@ class API
         return $this->generateSuccessArrayResponse($data);
     }
 
-    public function addShow($title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary)
+    public function addShow($title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary , $url)
     {
-        $sql = "INSERT INTO `TVShows` (`Title`, `Season`, `ReleaseDate` , `Length` , `Genre` , `Rating` , `AgeRating` , `Summary`) VALUES (?, ? , ? , ? , ? , ? , ? , ?)";
+        $sql = "INSERT INTO `TVShows` (`Title`, `Season`, `ReleaseDate` , `Length` , `Genre` , `Rating` , `AgeRating` , `Summary` , `URL`) VALUES (?, ? , ? , ? , ? , ? , ? , ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sssssss" , $title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary);
+        $stmt->bind_param("ssssssss" , $title , $season , $releaseDate , $length , $genre , $rating , $ageRating , $summary , $url);
         $stmt->execute();
 
         return $this->generateSuccessResponse("Successfully added Show");
@@ -374,6 +374,11 @@ class API
         {
             $conditions[] = "Summary = ?";
             $params[] = $summary;
+        }
+        if ($url !== null) 
+        {
+            $conditions[] = "URL = ?";
+            $params[] = $url;
         }
 
         if (count($conditions) > 0) 
@@ -504,9 +509,20 @@ class API
         {
             return $this->generateErrorResponse("You can only specify movieID or showID , one at a time");
         }
-        $sql = "INSERT INTO `Watchlist` (`user_id`, `MediaID`, `show_id`) VALUES (?, ?, ?)";
+        if($movie_id !== null)
+        {
+            $type = "Movie";
+            $media = $movie_id;
+        }
+        else if($show_id !== null)
+        {
+            $type = "Show";
+            $media = $show_id;
+        }
+
+        $sql = "INSERT INTO `Watchlist` (`user_id`, `MediaID`, `type`) VALUES (?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sssssss" , $user_id , $movie_id, $show_id);
+        $stmt->bind_param("sss" , $user_id , $media, $type);
         $stmt->execute();
 
         return $this->generateSuccessResponse("Added to watchlist");
@@ -537,13 +553,13 @@ class API
         }
         if($movie_id !== null)
         {
-            $sql = "DELETE FROM `TVShows` WHERE `user_id` = ? AND `movie_id` = ?";
+            $sql = "DELETE FROM `TVShows` WHERE `user_id` = ? AND `MediaID` = ? AND `type` = 'Movie'";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("ss", $user_id , $movie_id);
         }
         else if($show_id !== null)
         {
-            $sql = "DELETE FROM `TVShows` WHERE `user_id` = ? AND `show_id` = ?";
+            $sql = "DELETE FROM `TVShows` WHERE `user_id` = ? AND `MediaID` = ? AND `type` = 'Show'";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("ss", $user_id , $show_id);
         }
@@ -617,9 +633,9 @@ $api = new API();
 
             echo($response);
         }
-        else if (isset($postData["type"]) && $postData["type"] == "AddMovie" && isset($postData["title"]) && isset($postData["release_date"]) && isset($postData["length"]) && isset($postData["genre"]) && isset($postData["summary"]))
+        else if (isset($postData["type"]) && $postData["type"] == "AddMovie" && isset($postData["title"]) && isset($postData["release_date"]) && isset($postData["length"]) && isset($postData["genre"]) && isset($postData["summary"]) && isset($postData["url"]))
         {
-            $response = $api->addMovie($postData["title"], $postData["release_date"] , $postData["length"] , $postData["genre"] , $postData["rating"] , $postData["age_rating"] , $postData["summary"]);
+            $response = $api->addMovie($postData["title"], $postData["release_date"] , $postData["length"] , $postData["genre"] , $postData["rating"] , $postData["age_rating"] , $postData["summary"], $postData["url"]);
 
             echo($response);
         }
@@ -632,8 +648,8 @@ $api = new API();
             $rating = isset($postData["rating"]) ? $postData["rating"] : null;
             $age_rating = isset($postData["age_rating"]) ? $postData["age_rating"] : null;
             $summary = isset($postData["summary"]) ? $postData["summary"] : null;
-            
-            $response = $api->updateMovie($postData["movie_id"], $title, $release_date, $length , $genre , $rating , $age_rating , $summary);
+            $url = isset($postData["url"]) ? $postData["url"] : null;
+            $response = $api->updateMovie($postData["movie_id"], $title, $release_date, $length , $genre , $rating , $age_rating , $summary, $url);
 
             echo($response);
         }
@@ -659,9 +675,9 @@ $api = new API();
 
             echo($response);
         }
-        else if (isset($postData["type"]) && $postData["type"] == "AddShow" && isset($postData["title"]) && isset($postData["season"]) && isset($postData["release_date"]) && isset($postData["length"]) && isset($postData["genre"]) && isset($postData["summary"]))
+        else if (isset($postData["type"]) && $postData["type"] == "AddShow" && isset($postData["title"]) && isset($postData["season"]) && isset($postData["release_date"]) && isset($postData["length"]) && isset($postData["genre"]) && isset($postData["summary"]) && isset($postData["url"]))
         {
-            $response = $api->addShow($postData["title"], $postData["season"] , $postData["release_date"] , $postData["length"] , $postData["genre"] , $postData["rating"] , $postData["age_rating"] , $postData["summary"]);
+            $response = $api->addShow($postData["title"], $postData["season"] , $postData["release_date"] , $postData["length"] , $postData["genre"] , $postData["rating"] , $postData["age_rating"] , $postData["summary"] , $postData["url"]);
 
             echo($response);
         }
@@ -675,8 +691,8 @@ $api = new API();
             $rating = isset($postData["rating"]) ? $postData["rating"] : null;
             $age_rating = isset($postData["age_rating"]) ? $postData["age_rating"] : null;
             $summary = isset($postData["summary"]) ? $postData["summary"] : null;
-            
-            $response = $api->updateShow($postData["movie_id"], $title, $season , $release_date, $length , $genre , $rating , $age_rating , $summary);
+            $url = isset($postData["url"]) ? $postData["url"] : null;
+            $response = $api->updateShow($postData["movie_id"], $title, $season , $release_date, $length , $genre , $rating , $age_rating , $summary , $url);
 
             echo($response);
         }
