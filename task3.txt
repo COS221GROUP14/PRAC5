@@ -1,3 +1,4 @@
+//Angelique Breedt u23542838
 ER-to-Relational Mapping Algorithm 
 • Step 1: Mapping of regular (strong) entity types
       For each regular entity type, E, in the ER schema Step 1: 
