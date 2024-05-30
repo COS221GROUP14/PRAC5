@@ -12,13 +12,18 @@
         <div class="media-container" id="media-container">
         </div>
         <div id = "newRatings">
+            <div id="Rating"></div>
             <h2>Write a review...</h2>
            <form>
-            <textarea>
+            <textarea id="ReviewText">
             </textarea>
+            <input type="number" min="0" max="10" placeholder="3" id="RatingNumber">
            </form>
+           <button onclick="addReview()">Post</button>
            <div id ="Ratings" class=" Ratings"> <!--star ratings-->
+            <ul id="reviews">
 
+            </ul>
            </div>
         </div>
         <div id="loading-container">

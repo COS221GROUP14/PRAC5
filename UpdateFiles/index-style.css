@@ -22,6 +22,14 @@ body {
     z-index: 100;
 }
 
+.navbar div {
+    margin-left: 80%; 
+}
+
+.navbar div button{
+    font-size: 32px; 
+}
+
 .navbar .logo {
     max-height: 100px; 
     max-width: 150px; 
@@ -60,4 +68,8 @@ button {
 
 button:hover {
     background-color: #3e8e41; 
+}
+
+.form-group img {
+    max-height: 15vw;
 }

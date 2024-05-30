@@ -16,23 +16,37 @@
                 <input type="text" id="username" placeholder="Username" required>
                 <input type="password" id="password" placeholder="Password" required>
                 <input type="email" id="email" placeholder="Email" required>
+                <div class="form-group">
+                    <label for="url">Image URL</label>
+                    <input type="url" id="url" required oninput="updateImage()">
+                </div>
+                <div class="form-group">
+                    <img id="propertyImage" src="" alt="Property Image">
+                </div>
                 <button type="submit">Register</button>
             </form>
         </div>
         <script>
+            function updateImage() {
+            var imageUrl = document.getElementById('url').value;
+            var imgElement = document.getElementById('propertyImage');
+            imgElement.src = imageUrl;
+        }
             document.getElementById('authForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const email = document.getElementById('email').value;
+            const image = document.getElementById('url').value;
 
             const loginObject = {
                 type : "Register",
                 username : username,
                 password : password,
                 email : email,
-                premium : 0
+                premium : 0,
+                url : image
             }
             // const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
 

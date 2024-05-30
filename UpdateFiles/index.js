@@ -19,7 +19,7 @@ async function populate_Media(data)
         var message = document.createElement('div');
         message.classList.add('empty-message');
         message.style.color = '#EDF5E1';
-        message.style.background = '#05386B';
+        message.style.background = '#272727';
         message.style.fontSize = '50px';
         message.style.marginLeft = '5vw';
         message.style.padding = '1vw';
@@ -44,7 +44,6 @@ async function populate_Media(data)
         anchor.classList.add('view-button');
     
         var image = document.createElement('img');
-        image.classList.add('house-thumbnail');
         image.src = item.URL;
         image.alt = "Image";
     
@@ -89,6 +88,22 @@ async function getMedia()
     var currentUrl = window.location.href;
     if(!currentUrl.includes("view.html"))
     {
+        var profile = document.getElementById('profilePic');
+        let image = document.createElement('img');
+        image.style.width = "150px";
+        image.style.borderRadius = "100px";
+        let user_id = localStorage.getItem('userID');
+        let userdata = {
+            type : "GetUserImage",
+            user_id : user_id
+        }
+        let userProf = await fetchMedia(userdata);
+    
+        image.alt = "Image";
+        image.src = userProf.data[0].URL;
+    
+        profile.appendChild(image);
+    
         let data = await get_attributes("GetMovie");
         let movies = await fetchMedia(data);
         data = await get_attributes("GetShow");
@@ -122,8 +137,7 @@ async function getMedia()
 
 async function get_view(id , type)
 {
-    let data = {
-    }
+    let data = {}
     if(type === "Movie")
     {
         data.type = "GetMovie";
@@ -132,20 +146,85 @@ async function get_view(id , type)
     if(type === "Show")
     {
         data.type = "GetShow";
-        data.movie_id = id;
+        data.show_id = id;
     }
     let media = await fetchMedia(data);
+    data = {}
+    if(type === "Movie")
+    {
+        data.type = "GetCast";
+        data.movie_id = id;
+    }
+    else if(type === "Show")
+    {
+        data.type = "GetCast";
+        data.show_id = id;
+    }
+    let cast = await fetchMedia(data);
 
-    await populate_view(media.data[0]);
+    data = {}
+    if(type === "Movie")
+    {
+        data.type = "GetReview";
+        data.movie_id = id;
+    }
+    else if(type === "Show")
+    {
+        data.type = "GetReview";
+        data.show_id = id;
+    }
+    let reviews = await fetchMedia(data);
+
+    data = {}
+    if(type === "Movie")
+        {
+            data.type = "GetAverageReview";
+            data.movie_id = id;
+        }
+        else if(type === "Show")
+        {
+            data.type = "GetAverageReview";
+            data.show_id = id;
+        }
+    let rating = await fetchMedia(data);
+    await populate_view(media.data[0], cast);
+    await populate_reviews(reviews.data , rating.data);
 }
 
-async function populate_view(data)
-{
+async function populate_view(data , cast)
+{   
+    let castItems = cast.data;
     document.getElementById('loading-container').style.display = 'block';
-    console.log(data);
     var media = document.getElementById('media-container');
 
-    var imageContainer = document.createElement('div');
+    var castContainer = document.createElement('ul');
+    const item = castItems;
+    var lead_actor = item[0].lead_actor;
+    var secondary_actor = item[0].secondary_actor;
+    var director = item[0].director;
+    var backstage = item[0].backstage;
+
+    let lead = document.createElement('div');
+    lead.textContent = "Lead : " + lead_actor;
+
+    let secondary = document.createElement('div');
+    secondary.textContent = "Secondary : " + secondary_actor;
+
+    let dir = document.createElement('div');
+    dir.textContent = "Director : " + director;
+
+    let back = document.createElement('div');
+    back.textContent = "Backstage : " + backstage;
+
+    let list = document.createElement('li');
+    list.appendChild(lead);
+    list.appendChild(secondary);
+    list.appendChild(dir);
+    list.appendChild(back);
+    castContainer.appendChild(list);
+
+    
+    var imageContainer = document.createElement('divs');
     var image = document.createElement('img');
     image.src = data.URL;
     image.alt = "Media";
@@ -177,8 +256,71 @@ async function populate_view(data)
     media.appendChild(Length);
     media.appendChild(ReleaseDate);
     media.appendChild(Summary);
-
+    media.appendChild(castContainer);
     document.getElementById('loading-container').style.display = 'none';
+}
+
+
+async function addReview()
+{
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    const id = urlParams.get('id');
+    const type = urlParams.get('type');
+    
+    const reviewText = document.getElementById("ReviewText").value.trim();
+    const ratingNumber = document.getElementById("RatingNumber").value;
+
+    let data = {
+        type : "AddReview",
+        rating : ratingNumber,
+        summary : reviewText
+    }
+    if(type === "Movie")
+    {
+       data["movie_id"] = id;
+    }
+    else
+    {
+        data["show_id"] = id;
+    }
+    await fetchMedia(data);
+    location.reload();
+}
+
+function roundToDecimals(num, decimals) {
+    let factor = Math.pow(10, decimals);
+    return Math.round(num * factor) / factor;
+}
+
+
+async function populate_reviews(data , rating)
+{
+    let items = data;
+    var review = document.getElementById('reviews');
+
+    var ratingElement = document.getElementById('Rating');
+    
+    var ratingAverage = document.createElement('div');
+    ratingAverage.textContent = "Movie Rating: " + roundToDecimals(rating[0].rating,2);
+    ratingElement.appendChild(ratingAverage);
+    for (const item of items) {
+        var listItem = document.createElement('li');
+
+        var contents = document.createElement('span');
+        var Rating = document.createElement('span');
+        var Summary = document.createElement('div');
+
+        Rating.textContent = "Rating : " + item.rating;
+        Summary.textContent = "Summary : " + item.summary;
+
+        contents.appendChild(Rating);
+        contents.appendChild(Summary);
+        listItem.appendChild(contents);
+        review.appendChild(listItem);
+    }
+
 }
 
 async function get_attributes(type) {
